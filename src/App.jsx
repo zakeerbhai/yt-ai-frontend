@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { useAuth } from "./context/useAuth";
@@ -12,10 +13,19 @@ import Analytics from "./pages/Analytics";
 import Assistant from "./pages/Assistant";
 import Calendar from "./pages/Calendar";
 import Settings from "./pages/Settings";
+import api from "./lib/api";
 
 function ProtectedLayout() {
   const { user, loading } = useAuth();
   const location = useLocation();
+
+  // Register user in our database on first login.
+  // /api/me creates the user row if it doesn't exist yet.
+  useEffect(() => {
+    if (user) {
+      api.get("/api/me").catch(() => {});
+    }
+  }, [user]);
 
   if (loading) {
     return (
