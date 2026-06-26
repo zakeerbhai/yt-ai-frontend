@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+@theme {
+  /* Ink base + paper surface — deliberately not the cream/terracotta default */
+  --color-ink: #0F1115;
+  --color-ink-soft: #171A21;
+  --color-ink-line: #262A33;
+  --color-paper: #F7F5F0;
+  --color-paper-dim: #EDEAE2;
+
+  /* Single signal color for "this needs you" */
+  --color-signal: #FF5A1F;
+  --color-signal-soft: #FF5A1F1A;
+
+  /* State colors — used only for status, nowhere else */
+  --color-success: #3D7A5C;
+  --color-success-soft: #3D7A5C1A;
+  --color-danger: #C9402F;
+  --color-danger-soft: #C9402F1A;
+  --color-stone: #8B8378;
+
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+html {
+  background: var(--color-ink);
+  color-scheme: dark;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-ink);
+  color: var(--color-paper);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-signal);
+  color: var(--color-ink);
+}
+
+/* Visible keyboard focus everywhere — not optional */
+:focus-visible {
+  outline: 2px solid var(--color-signal);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
