@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useChannelContext } from "../context/useChannelContext";
+import { useAuth } from "../context/useAuth";
 import api from "../lib/api";
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
@@ -24,11 +25,13 @@ const MODES = [
 
 export default function Settings() {
   const { channels, refresh } = useChannelContext();
+  const { user } = useAuth();
 
-  function connectYoutube() {
-    // Real browser navigation, not fetch — this is a redirect chain
-    // through Google's consent screen, which can't happen via XHR.
-    window.location.href = `${API_BASE}/api/auth/youtube/connect`;
+  async function connectYoutube() {
+    // Get the Firebase ID token and pass it as a URL parameter
+    // since browser redirects can't send Authorization headers.
+    const token = await user.getIdToken();
+    window.location.href = `${API_BASE}/api/auth/youtube/connect?token=${token}`;
   }
 
   return (
@@ -172,3 +175,53 @@ function ChannelCard({ channel, onChanged }) {
     </div>
   );
 }
+Done
+Copy everything above and paste it into GitHub replacing the old Settings.jsx content. Commit it.
+
+File 2 — update auth.py:
+
+Go to GitHub → yt-ai-backend → app → api → auth.py
+Click pencil ✏️
+Find the connect_youtube function — it starts with @router.get("/connect")
+Replace just that function with the new version from our backend fix above
+Actually — it's easier to replace the whole file. Here's the complete updated auth.py:
+
+
+Show full updated auth.py for copying to GitHub
+Show full updated auth.py for copying to GitHub
+I notice get_firebase_app is missing its import in the updated connect function. Let me fix that first:
+
+
+Add missing get_firebase_app import to auth.py
+Add missing get_firebase_app import to auth.py
+Also remove the duplicate imports inside the function:
+
+
+Remove duplicate imports inside the connect_youtube function
+Remove duplicate imports inside the connect_youtube function
+Also need to add the firebase_auth import at the top:
+
+
+Add firebase_auth import at the top of auth.py
+Add firebase_auth import at the top of auth.py
+Now go to GitHub and update both files:
+
+Backend — auth.py:
+
+GitHub → yt-ai-backend → app → api → auth.py
+Click pencil ✏️
+Select all → delete → paste the full content below:
+
+Show final auth.py for copying
+Show final auth.py for copying
+Copy everything above and:
+
+Update auth.py on GitHub → commit
+Update Settings.jsx on GitHub → commit
+Wait for Railway and Vercel to redeploy automatically (about 2 minutes each)
+Then try connecting your YouTube channel again.
+
+Tell me: did you update both files on GitHub?
+
+
+
