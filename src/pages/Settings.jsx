@@ -28,8 +28,12 @@ export default function Settings() {
   const { user } = useAuth();
 
   async function connectYoutube() {
-    const token = await user.getIdToken();
-    window.location.href = `${API_BASE}/api/auth/youtube/connect?token=${token}`;
+    try {
+      const token = await user.getIdToken(true);
+      window.location.href = `${API_BASE}/api/auth/youtube/connect?token=${token}`;
+    } catch (err) {
+      alert("Login error: " + err.message + ". Please refresh and try again.");
+    }
   }
 
   return (
