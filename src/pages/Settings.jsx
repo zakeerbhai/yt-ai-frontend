@@ -29,10 +29,13 @@ export default function Settings() {
 
   async function connectYoutube() {
     try {
+      // First ensure user exists in our database
+      await api.get("/api/me");
+      // Then get token and redirect
       const token = await user.getIdToken(true);
       window.location.href = `${API_BASE}/api/auth/youtube/connect?token=${token}`;
     } catch (err) {
-      alert("Login error: " + err.message + ". Please refresh and try again.");
+      alert("Error: " + err.message + ". Please try again.");
     }
   }
 
