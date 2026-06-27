@@ -1,12 +1,12 @@
 import axios from "axios";
 import { auth } from "./firebase";
 
+const API_BASE = "https://grateful-insight-production-2e15.up.railway.app";
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:8000",
+  baseURL: API_BASE,
 });
 
-// Attach the current Firebase ID token to every outgoing request.
-// getIdToken() automatically refreshes if the cached token is stale.
 api.interceptors.request.use(async (config) => {
   const user = auth.currentUser;
   if (user) {
@@ -16,8 +16,6 @@ api.interceptors.request.use(async (config) => {
   return config;
 });
 
-// Normalize backend error shape (FastAPI returns {"detail": "..."})
-// into a single readable message so components don't each re-parse it.
 api.interceptors.response.use(
   (response) => response,
   (error) => {
